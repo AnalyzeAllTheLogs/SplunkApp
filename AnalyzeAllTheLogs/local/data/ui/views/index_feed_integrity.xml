@@ -1,0 +1,52 @@
+<dashboard>
+  <label>Index Feed Integrity</label>
+  <description>Use Case: To see the current status (snapshot) of the indexers completing (work in progress). This is experimental and might not produce accurate results. This will need some expert analysis of the outcome to validate.</description>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>| rest /services/data/indexes
+| search minTime!="" AND maxTime!=""
+| stats last(minTime) as EarliestEvent  last(maxTime) AS Recent last(updated) AS "Updated", sum(totalEventCount) AS count BY title
+| eval IndexLastUpdatedDay=round(strptime(Updated,"%FT%T%z"),0)
+| eval UpdatedDay=round(strptime(Updated,"%FT%T%z"),0)
+| eval RecentDay=round(strptime(Recent,"%FT%T%z"),0)
+| eval UpdatedDriftFromLastEvent=round(round((RecentDay-UpdatedDay),0)/86400,2)
+| eval LastEvent=round(round((RecentDay-now()),0)/86400,2)
+| eval IndexLastUpdated=round(round((IndexLastUpdatedDay-now()),0)/86400,2)
+| search title=ip-*
+| fields - count RecentDay UpdatedDay IndexLastUpdatedDay
+| sort LastEvent
+| table title Recent Updated LastEvent UpdatedDriftFromLastEvent IndexLastUpdated</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">false</option>
+        <format type="color" field="LastEvent">
+          <colorPalette type="list">[#555555,#D93F3C,#FF3F2C,#EF8455,#F7BC39,#FAF777,#65A637,#6DB7C6]</colorPalette>
+          <scale type="threshold">-50,-7,-0.33,-0.125,-0.0083,-0.0013,0.0013</scale>
+        </format>
+        <format type="color" field="UpdatedDrift">
+          <colorPalette type="list">[#555555,#D93F3C,#FF3F2C,#EF8455,#F7BC39,#FAF777,#65A637,#6DB7C6]</colorPalette>
+          <scale type="threshold">-50,-7,-0.33,-0.125,-0.0083,-0.0013,0.0013</scale>
+        </format>
+        <format type="color" field="UpdatedDriftFromLastEvent">
+          <colorPalette type="list">[#555555,#D93F3C,#FF3F2C,#EF8455,#F7BC39,#FAF777,#65A637,#6DB7C6]</colorPalette>
+          <scale type="threshold">-50,-7,-0.33,-0.125,-0.0083,-0.0013,0.0013</scale>
+        </format>
+        <format type="color" field="IndexLastUpdated">
+          <colorPalette type="list">[#555555,#D93F3C,#FF3F2C,#EF8455,#F7BC39,#FAF777,#65A637,#6DB7C6]</colorPalette>
+          <scale type="threshold">-50,-7,-0.33,-0.125,-0.0083,-0.0013,0.0013</scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</dashboard>

@@ -1,0 +1,70 @@
+[app/ui]
+version = 8.0.4
+modtime = 1591673605.737825400
+
+[app/launcher]
+version = 8.0.4
+modtime = 1591673605.744827100
+
+[savedsearches/SmartQuotes]
+access = read : [ * ], write : [ * ]
+export = none
+owner = admin
+version = 8.0.4
+modtime = 1591674204.797416000
+
+[savedsearches/User%20Capabilities%20%28and%20quota%29]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591674329.497267000
+
+[savedsearches/Users%20permission%20diff]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591674421.488262500
+
+[views/index_feed_integrity]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591674815.659250100
+
+[views/uc_info]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591674909.315472900
+
+[savedsearches/Monitor%20for%20Removals%20%28draft%29]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591675028.101208500
+
+[views/notable_search]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591675148.890483700
+
+[savedsearches/List%20of%20Indexes]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591675187.173094500
+
+[savedsearches/_internal%20Auditing]
+access = read : [ * ], write : [ * ]
+export = system
+owner = admin
+version = 8.0.4
+modtime = 1591675818.005130800

@@ -1,0 +1,29 @@
+<dashboard>
+  <label>UC Info</label>
+  <description>Use Case: This outputs the correlation searches to a dashboard, so they are easily viewed (and can be exported by opening in search). Tested only in Enterprise Security app.</description>
+  <row>
+    <panel>
+      <title>Use Cases</title>
+      <table>
+        <search>
+          <query>| rest splunk_server=local count=0 /services/saved/searches
+| where match('action.correlationsearch.enabled', "1|[Tt]|[Tt][Rr][Uu][Ee]")
+| eval status=if(match(disabled,"1"),"Disabled", "Enabled" )
+| rename action.notable.param.severity as rule_severity, action.notable.param.* as *, action.correlationsearch.* as *, eai:acl.* as *, action.correlationsearch.label as rule_name, dispatch.* as *, alert.* as * ,action.risk.param._* as *
+| table actions updated status owner rule_severity security_domain risk_object risk_object_type risk_score rule_name search drilldown_search rule_description app cron_schedule earliest_time latest_time
+| sort rule_name|</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

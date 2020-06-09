@@ -1,0 +1,40 @@
+<dashboard>
+  <label>Notable Search</label>
+  <description>Use Case: To search for notable events from Enterprise Security Suite and notable artifacts easily. Also to find the status, user, latest analyst comments, and if a suppression was in place for a notable event occurred. The suppression part is experimental, as this might depend on keeping the suppression indefinitely so it populates (although appropriate for a 7 day time frame); needs more testing to confirm. Takes 3 potential inputs, 2 of them are enrichments which need to stay to look up event_id and event_hash (as they aren't text in the _raw notable event); $string$ $event_id$ $event_hash$.</description>
+  <fieldset submitButton="false" autoRun="false">
+    <input type="text" token="string" searchWhenChanged="true">
+      <label>Text Search (not EventHash/EventID)</label>
+      <initialValue>""</initialValue>
+    </input>
+    <input type="text" token="event_id" searchWhenChanged="true">
+      <label>EventID</label>
+      <prefix>event_id=</prefix>
+      <default>*</default>
+    </input>
+    <input type="text" token="event_hash" searchWhenChanged="true">
+      <label>EventHash</label>
+      <prefix>event_hash=</prefix>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <title>Notable Index search for past 7 days [String Search will not return results for RuleID or EventHash, please use the other fields] $string$</title>
+        <search>
+          <query>`notable`
+| eval suppressed=if(match(eventtype, "notable_suppression"), "Yes", "No")
+| replace "modnotable_results" WITH "", "notable" WITH "", "nix-all-logs" WITH "", "notable_suppression-*" with "*" in eventtype
+| eval Suppression=eventtype
+| search $string$ $event_id$ $event_hash$
+| fillnull value="n/a"
+| eval Time=strftime(_time,"%F %T.%3N %Z")
+| table Time action src dest user rule_title event_id event_hash suppressed Suppression status_description status_label comment owner</query>
+          <earliest>-7d@d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="refresh.display">preview</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
